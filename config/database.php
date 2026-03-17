@@ -1,21 +1,37 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
-// ตั้งค่าฐานข้อมูล
-define('DB_HOST', 'localhost');
+// --- 1. ตั้งค่าฐานข้อมูล (แก้ไขจุดที่ผิด) ---
+define('DB_HOST', 'sql12.freesqldatabase.com'); // แก้จาก localhost เป็นชื่อโฮสต์จริง
 define('DB_USER', 'sql12820323');
 define('DB_PASS', '3byAVLpJSr');
 define('DB_NAME', 'sql12820323');
-define('BASE_URL', 'http://sql12.freesqldatabase.com');
 
-// เชื่อมต่อฐานข้อมูล
+// แก้ไข BASE_URL ให้เป็นที่อยู่เว็บของคุณบน Render
+define('BASE_URL', 'https://crudpos.onrender.com'); 
+
+// --- 2. การเชื่อมต่อฐานข้อมูล (PDO) ---
 try {
-    $pdo = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4", DB_USER, DB_PASS);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+    // กำหนดรายละเอียดการเชื่อมต่อ
+    $dsn = "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4";
+    
+    // ตั้งค่า Options เพื่อความเสถียร
+    $options = [
+        PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        PDO::ATTR_EMULATE_PREPARES   => false,
+    ];
+
+    $pdo = new PDO($dsn, DB_USER, DB_PASS, $options);
+
 } catch(PDOException $e) {
+    // ถ้ายังขึ้น could not find driver แสดงว่า Dockerfile ยังติดตั้งไม่สำเร็จ
     die("Connection failed: " . $e->getMessage());
 }
+
+// --- 3. ฟังก์ชันต่างๆ (ปรับปรุงให้ใช้ BASE_URL ได้ถูกต้อง) ---
 
 // ฟังก์ชันตรวจสอบการล็อกอิน
 function isLoggedIn() {
@@ -24,7 +40,12 @@ function isLoggedIn() {
 
 // ฟังก์ชันรีไดเร็กต์
 function redirect($url) {
-    header("Location: " . $url);
+    // ปรับให้รองรับทั้ง URL เต็ม และ Path สั้นๆ
+    if (filter_var($url, FILTER_VALIDATE_URL)) {
+        header("Location: " . $url);
+    } else {
+        header("Location: " . BASE_URL . "/" . ltrim($url, '/'));
+    }
     exit();
 }
 
@@ -53,9 +74,7 @@ function showMessage() {
               </div>";
         
         unset($_SESSION['message']);
-        if (isset($_SESSION['message_type'])) {
-            unset($_SESSION['message_type']);
-        }
+        unset($_SESSION['message_type']);
     }
 }
 
