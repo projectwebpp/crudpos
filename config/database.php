@@ -4,7 +4,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 // --- ค่ากำหนดฐานข้อมูล ---
-define('DB_HOST', 'sql12.freesqldatabase.com');
+define('DB_HOST', 'localhost');
 define('DB_USER', 'sql12820323');
 define('DB_PASS', '3byAVLpJSr');
 define('DB_NAME', 'sql12820323');
