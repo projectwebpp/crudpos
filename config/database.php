@@ -4,13 +4,13 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 // --- 1. ตั้งค่าฐานข้อมูล (แก้ไขจุดที่ผิด) ---
-define('DB_HOST', 'sql12.freesqldatabase.com'); // แก้จาก localhost เป็นชื่อโฮสต์จริง
-define('DB_USER', 'sql12820323');
-define('DB_PASS', '3byAVLpJSr');
-define('DB_NAME', 'sql12820323');
+define('DB_HOST', 'localhost'); // แก้จาก localhost เป็นชื่อโฮสต์จริง
+define('DB_USER', 'if0_38904313');
+define('DB_PASS', 'RyvwsdTAZ3LMj');
+define('DB_NAME', 'https://if0_38904313_crud_system');
 
 // แก้ไข BASE_URL ให้เป็นที่อยู่เว็บของคุณบน Render
-define('BASE_URL', 'https://crudpos.onrender.com'); 
+define('BASE_URL', 'sql307.infinityfree.com'); 
 
 // --- 2. การเชื่อมต่อฐานข้อมูล (PDO) ---
 try {
